@@ -30,6 +30,13 @@
         android:text="启动SchedulerJob"/>
 
     <Button
+        android:id="@+id/btn_start_daemon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="启动双进程保活"/>
+
+    <Button
         android:id="@+id/btn_request_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,10 +44,17 @@
         android:text="请求绑定通知栏监听"/>
 
     <Button
-        android:id="@+id/btn_request_whitelist"
+        android:id="@+id/btn_request_battery_whitelist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         android:text="请求加入电池优化白名单"/>
+
+    <Button
+        android:id="@+id/btn_request_auto_whitelist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="请求加入自启动白名单"/>
 
 </LinearLayout>

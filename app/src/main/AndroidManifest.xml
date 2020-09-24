@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,11 +12,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver
+            android:name=".daemon.component.DaemonProcessReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":daemon"/>
+
+        <service
+            android:name=".daemon.component.DaemonProcessService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":daemon"/>
+
+        <receiver
+            android:name=".daemon.component.MainProcessReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".daemon.component.MainProcessService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
-            android:name=".ScreenActivity"
+            android:name=".sswo.ScreenActivity"
             android:theme="@style/AppTheme.ScreenActivity" />
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +46,7 @@
         </activity>
 
         <receiver
-            android:name=".receiver.ScreenReceiver"
+            android:name=".sswo.ScreenReceiver"
             android:enabled="true"
             android:exported="true" />
         <receiver
@@ -35,6 +54,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
                 <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
@@ -46,6 +66,7 @@
             </intent-filter>
             <intent-filter>
                 <data android:scheme="package" />
+
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <action android:name="android.intent.action.PACKAGE_CHANGED" />
@@ -62,7 +83,6 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-
         <service
             android:name=".service.JobSchedulerService"
             android:enabled="true"

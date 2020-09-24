@@ -1,10 +1,9 @@
-package com.example.keepalivedemo.receiver
+package com.example.keepalivedemo.sswo
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.example.keepalivedemo.manager.ScreenManager
 
 class ScreenReceiver : BroadcastReceiver() {
 
@@ -14,7 +13,8 @@ class ScreenReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive(), action = " + intent.action)
-        if(intent.action == Intent.ACTION_SCREEN_ON){
+        if(intent.action == Intent.ACTION_SCREEN_ON
+            || intent.action == Intent.ACTION_USER_PRESENT){
             ScreenManager.getInstance(context).finishActivity()
         }else if(intent.action == Intent.ACTION_SCREEN_OFF){
             ScreenManager.getInstance(context).startActivity()

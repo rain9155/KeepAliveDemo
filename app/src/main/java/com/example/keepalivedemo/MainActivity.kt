@@ -6,7 +6,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.keepalivedemo.manager.ScreenManager
+import com.example.keepalivedemo.daemon.DaemonManager
+import com.example.keepalivedemo.sswo.ScreenManager
 import com.example.keepalivedemo.service.ForegroundService
 import com.example.keepalivedemo.service.JobSchedulerService
 import com.example.keepalivedemo.utils.Util
@@ -54,6 +55,10 @@ class MainActivity : AppCompatActivity() {
             JobSchedulerService.schedulerJob(this)
         }
 
+        btn_start_daemon.setOnClickListener {
+            DaemonManager.inst(this).initDaemon()
+        }
+
         btn_request_notification.setOnClickListener {
             if(!Util.isNotificationListenerEnabled(this)){
                 Util.openNotificationListenSettings(this)
@@ -62,10 +67,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        btn_request_whitelist.setOnClickListener {
+        btn_request_battery_whitelist.setOnClickListener {
             if(!Util.isIgnoringBatteryOptimizations(this)){
                 Util.openIgnoreBatteryOptimizationsSettings(this)
             }
+        }
+
+        btn_request_auto_whitelist.setOnClickListener {
+            Util.openSettings(this)
         }
     }
 

@@ -1,14 +1,9 @@
 package com.example.keepalivedemo.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
+import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -67,25 +62,25 @@ class ForegroundService : Service() {
         Log.d(TAG, "onDestroy()")
     }
 
-    class RemoveNotificationService : Service(){
+    class RemoveNotificationService : IntentService("RemoveNotificationService") {
+
+        override fun onCreate() {
+            super.onCreate()
+            startForeground(NOTIFICATION_ID, createNotification(this))
+        }
 
         override fun onBind(intent: Intent?): IBinder? {
             return null
         }
 
-        override fun onCreate() {
-            super.onCreate()
-            startForeground(
-                NOTIFICATION_ID,
-                createNotification(
-                    this
-                )
-            )
-            Handler().postDelayed({
-                stopForeground(true)
-                NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID)
-                stopSelf()
-            }, 100)
+        override fun onHandleIntent(intent: Intent?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onDestroy() {
+            super.onDestroy()
+            stopForeground(true)
+            NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID)
         }
     }
 
