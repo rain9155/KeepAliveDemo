@@ -14,9 +14,7 @@ import com.example.keepalivedemo.utils.Util;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 原理分析 详见: http://blog.csdn.net/marswin89/article/details/50916631
- * <p>
- * 大致流程:
+ * 双进程保活，原理分析详见: http://blog.csdn.net/marswin89/article/details/50916631, 大致流程:
  * 1、4个文件，a进程文件a1，a2，b进程b1，b2
  * 2、a进程加锁文件a1，b进程同理
  * 3、a进程创建a2文件，然后轮询查看b2文件是否存在（这里可以轮询，因为时间很短），不存在代表b进程还没创建，b进程同理

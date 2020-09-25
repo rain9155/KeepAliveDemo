@@ -37,6 +37,13 @@
         android:text="启动双进程保活"/>
 
     <Button
+        android:id="@+id/btn_start_native"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="启native进程保活"/>
+
+    <Button
         android:id="@+id/btn_request_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

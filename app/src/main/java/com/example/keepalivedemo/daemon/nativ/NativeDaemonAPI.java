@@ -11,7 +11,7 @@ public class NativeDaemonAPI{
 
     static {
         try {
-            SoLoaderCompat.loadLibrary("daemon-lib");
+            SoLoaderCompat.loadLibrary("daemon");
         } catch (Exception e) {
             e.printStackTrace();
         }

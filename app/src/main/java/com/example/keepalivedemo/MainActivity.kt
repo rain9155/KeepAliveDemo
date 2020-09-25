@@ -5,11 +5,13 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import com.example.keepalivedemo.daemon.DaemonManager
 import com.example.keepalivedemo.sswo.ScreenManager
 import com.example.keepalivedemo.service.ForegroundService
 import com.example.keepalivedemo.service.JobSchedulerService
+import com.example.keepalivedemo.supervisor.SupervisorForegroundService
 import com.example.keepalivedemo.utils.Util
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -52,11 +54,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_start_scheduler.setOnClickListener {
-            JobSchedulerService.schedulerJob(this)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                JobSchedulerService.schedulerJob(this)
+            }
         }
 
         btn_start_daemon.setOnClickListener {
             DaemonManager.inst(this).initDaemon()
+        }
+
+        btn_start_native.setOnClickListener {
+            SupervisorForegroundService.startService(this)
         }
 
         btn_request_notification.setOnClickListener {

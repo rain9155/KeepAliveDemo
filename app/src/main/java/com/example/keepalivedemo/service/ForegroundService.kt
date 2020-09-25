@@ -11,7 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 /**
  * 前台服务提高进程优先级
  */
-class ForegroundService : Service() {
+open class ForegroundService : Service() {
 
     companion object{
         private const val TAG = "ForegroundService"
@@ -64,17 +64,12 @@ class ForegroundService : Service() {
 
     class RemoveNotificationService : IntentService("RemoveNotificationService") {
 
-        override fun onCreate() {
-            super.onCreate()
-            startForeground(NOTIFICATION_ID, createNotification(this))
-        }
-
         override fun onBind(intent: Intent?): IBinder? {
             return null
         }
 
         override fun onHandleIntent(intent: Intent?) {
-            TODO("Not yet implemented")
+            startForeground(NOTIFICATION_ID, createNotification(this))
         }
 
         override fun onDestroy() {

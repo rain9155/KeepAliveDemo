@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.keepalivedemo">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -12,17 +13,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service
+            android:name=".supervisor.SupervisorForegroundService"
+            android:enabled="true"
+            android:exported="true"/>
+
         <receiver
             android:name=".daemon.component.DaemonProcessReceiver"
             android:enabled="true"
             android:exported="true"
-            android:process=":daemon"/>
+            android:process=":daemon" />
 
         <service
             android:name=".daemon.component.DaemonProcessService"
             android:enabled="true"
             android:exported="true"
-            android:process=":daemon"/>
+            android:process=":daemon" />
 
         <receiver
             android:name=".daemon.component.MainProcessReceiver"
