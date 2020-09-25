@@ -9,6 +9,7 @@
 #include "string.h"
 #include "assert.h"
 #include "android/log.h"
+#include <sys/file.h>
 
 #define TAG		"PushDaemon"
 #define	DAEMON_CALLBACK_NAME "onDaemonDead"

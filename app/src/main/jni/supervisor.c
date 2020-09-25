@@ -13,6 +13,7 @@
 #include <pthread.h>
 #include <errno.h>
 #include <stddef.h>
+#include <sys/file.h>
 #include "android/log.h"
 
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
@@ -201,7 +202,12 @@ int check_lock(char* appFileDir, char* appLockFile) {
     android_log_write_debug(TAG, "mkdir success");
 
     int lockFileDescriptor = open(appLockFile, O_CREAT | O_RDONLY, S_IRUSR | S_IWUSR);
-    return lockFileDescriptor;
+    int lockRet = flock(lockFileDescriptor, LOCK_EX | LOCK_NB);
+    if (lockRet == -1) {
+        android_log_write_debug(TAG, "Supervisor by another process");
+        close(lockFileDescriptor);
+    }
+    return lockRet;
 }
 
 
@@ -229,8 +235,8 @@ int main(int argc, char **argv) {
     android_log_write_debug(TAG, PROCESS_NAME);
 
     // 创建锁文件，通过检测加锁状态来保证只有一个监听进程
-    int lockFileDescriptor = check_lock(APP_FILES_DIR, APP_LOCK_FILE);
-    if(lockFileDescriptor == -1){
+    int lock_ret = check_lock(APP_FILES_DIR, APP_LOCK_FILE);
+    if(lock_ret == -1){
         exit(1);
     }
 
