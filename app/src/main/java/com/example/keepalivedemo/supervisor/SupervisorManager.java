@@ -3,16 +3,20 @@ package com.example.keepalivedemo.supervisor;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Build;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.keepalivedemo.utils.Executors;
 import com.example.keepalivedemo.utils.Util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,12 +32,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SupervisorManager {
 
     private static final String TAG = "NativeManager";
-    private static final String NO_PUSH_FILE = "noPushFile";
     private static final String SUPERVISOR_FILE = "supervisor";
 
     private Context mContext;
     private AtomicBoolean mIsInited = new AtomicBoolean(false);
     private String mSupervisorFilePath;
+    private volatile java.lang.Process mNativeProcess;
 
     private volatile static SupervisorManager sInstance;
 
@@ -57,7 +61,6 @@ public class SupervisorManager {
             if(mIsInited.getAndSet(true)){
                 return;
             }
-            deleteNoPushFile();
             copyFileFormAssets();
             // 开始5.0 以下的 c进程保活
             startNativeSupervisorProcess();
@@ -69,9 +72,9 @@ public class SupervisorManager {
 
     public void stopKeepAlive() {
         try {
+            mNativeProcess.destroy();
             mIsInited.set(false);
-            createNoPushFile();
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -143,7 +146,8 @@ public class SupervisorManager {
             public void run() {
                 int ret = -1;
                 try {
-                    ret = Runtime.getRuntime().exec(command, null, null).waitFor();
+                    mNativeProcess = Runtime.getRuntime().exec(command, null, null);
+                    ret = mNativeProcess.waitFor();
                 } catch (Exception e) {
                     e.printStackTrace();
                     mIsInited.set(false);
@@ -151,24 +155,6 @@ public class SupervisorManager {
                 Log.d(TAG, "exec, ret = " + ret);
             }
         });
-    }
-
-    private void createNoPushFile() throws IOException {
-        String filesPath = mContext.getFilesDir().getAbsolutePath();
-        String noPushFile = filesPath + File.separator + NO_PUSH_FILE;
-        File file = new File(noPushFile);
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-    }
-
-    private void deleteNoPushFile(){
-        String filesPath = mContext.getFilesDir().getAbsolutePath();
-        String noPushFile = filesPath + File.separator + NO_PUSH_FILE;
-        File file = new File(noPushFile);
-        if(file.exists()){
-            file.delete();
-        }
     }
 
     /**

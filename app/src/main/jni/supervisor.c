@@ -151,7 +151,6 @@ pid_t proc_find(const char* name, const pid_t curpid) {
 void start_supervisor(void* args) {
     char* appDir = ((void**)args)[0];
     char* processName = ((void**)args)[1];
-    char* appNoPushFile = ((void**)args)[2];
 
     while (1) {
         sleep(SLEEP_INTERVEL);
@@ -165,14 +164,9 @@ void start_supervisor(void* args) {
         fclose(p_appDir);
 
         pid_t pid = proc_find(processName, getpid());
-        FILE *p_noPushFile = fopen(appNoPushFile, "r");
-        if (pid != -1 && p_noPushFile == NULL) {
+        if (pid != -1) {
             android_log_write_debug(TAG, "proc_find");
             continue;
-        }
-
-        if (p_noPushFile != NULL) {
-            fclose(p_noPushFile);
         }
         // send proc not find msg
         put(&buffer, PROC_NOT_FOUND);
@@ -224,14 +218,11 @@ int main(int argc, char **argv) {
 
     char APP_FILES_DIR[strlen(APP_DIR) + 7];
     sprintf(APP_FILES_DIR, "%s/files", APP_DIR);
-    char APP_NO_PUSH_FILE[strlen(APP_FILES_DIR) + 12];
-    sprintf(APP_NO_PUSH_FILE, "%s/noPushFile", APP_FILES_DIR);
     char APP_LOCK_FILE[strlen(APP_FILES_DIR) + 11];
     sprintf(APP_LOCK_FILE, "%s/lockFile", APP_FILES_DIR);
 
     android_log_write_debug(TAG, APP_DIR);
     android_log_write_debug(TAG, APP_FILES_DIR);
-    android_log_write_debug(TAG, APP_NO_PUSH_FILE);
     android_log_write_debug(TAG, PROCESS_NAME);
 
     // 创建锁文件，通过检测加锁状态来保证只有一个监听进程
@@ -243,9 +234,8 @@ int main(int argc, char **argv) {
     init(&buffer);
 
     pthread_t supervisor_thread;
-    void* supervisorThreadArg[3] = {APP_DIR, PROCESS_NAME, APP_NO_PUSH_FILE};
-    int ret_supervisor_thread = pthread_create(&supervisor_thread, NULL, (void *) &start_supervisor,
-            supervisorThreadArg);
+    void* supervisorThreadArg[3] = {APP_DIR, PROCESS_NAME};
+    int ret_supervisor_thread = pthread_create(&supervisor_thread, NULL, (void *) &start_supervisor, supervisorThreadArg);
 
     if (ret_supervisor_thread != 0) {
         android_log_write_debug(TAG, "Add Supervisor Fail");

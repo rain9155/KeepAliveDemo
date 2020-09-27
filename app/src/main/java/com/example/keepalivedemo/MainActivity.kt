@@ -12,6 +12,7 @@ import com.example.keepalivedemo.sswo.ScreenManager
 import com.example.keepalivedemo.service.ForegroundService
 import com.example.keepalivedemo.service.JobSchedulerService
 import com.example.keepalivedemo.supervisor.SupervisorForegroundService
+import com.example.keepalivedemo.supervisor.SupervisorManager
 import com.example.keepalivedemo.utils.Util
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_start_native.setOnClickListener {
-            SupervisorForegroundService.startService(this)
+            SupervisorManager.inst(this).startKeepAlive()
         }
 
         btn_request_notification.setOnClickListener {
